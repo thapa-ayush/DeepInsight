@@ -9,10 +9,10 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(sys.stdout),
-        logging.FileHandler('deepanalytica.log')
+        logging.FileHandler('deepinsight.log')
     ]
 )
-logger = logging.getLogger('deepanalytica')
+logger = logging.getLogger('deepinsight')
 
 # Load environment variables
 load_dotenv()
