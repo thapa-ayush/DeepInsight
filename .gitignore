@@ -24,30 +24,28 @@ wheels/
 venv/
 ENV/
 env/
-.env
 
 # IDE
 .idea/
 .vscode/
 *.swp
 *.swo
+
+# Environment variables
+.env
+.deepseek_key
+
+# Logs
+*.log
+
+# Database
+*.db
+*.sqlite3
+
+# OS
 .DS_Store
+Thumbs.db
 
 # Project specific
-*.log
-.streamlit/
-.cache/
-.pytest_cache/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# Data files
-*.csv
-*.xlsx
-*.xls
-*.parquet
-*.json
-!package.json
-*.h5
-*.pkl
+data/
+uploads/
