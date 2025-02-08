@@ -1,0 +1,40 @@
+# Git
+.git
+.gitignore
+
+# Environment
+.env
+.env.*
+!.env.example
+venv/
+__pycache__/
+*.pyc
+
+# Development
+*.log
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project specific
+generate_key.py
+db_setup.sql
+
+# Documentation
+README.md
+LICENSE
+*.md
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Data files
+data/
+*.csv
+*.xlsx
+*.parquet
+*.json
+*.h5
+*.hdf5
