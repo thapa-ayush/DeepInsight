@@ -22,7 +22,7 @@ DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY')
 
 # App configuration
 APP_NAME = "DeepInsight"
-APP_VERSION = "1.0.0"
+APP_VERSION = "2.0.0"  # Major version update: Added AI insights with improved performance
 
 # Cache configuration
 CACHE_TTL = 3600  # 1 hour

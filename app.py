@@ -557,173 +557,200 @@ def display_ai_features():
     df = st.session_state.current_df
     
     st.markdown("""
-    <div style='background: linear-gradient(90deg, #4F46E5 0%, #7C3AED 100%); padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;'>
+    <div style='background: linear-gradient(90deg, #4F46E5 0%, #7C3AED 100%); padding: 2rem; border-radius: 0.75rem; margin-bottom: 2rem;'>
         <h2 style='color: white; margin: 0;'>🤖 AI-Powered Analysis</h2>
-        <p style='color: #E5E7EB; margin: 0.5rem 0 0 0;'>Get deep insights and narratives about your data</p>
+        <p style='color: #E5E7EB; margin: 1rem 0 0 0;'>Get comprehensive insights, forecasts, and narratives about your data</p>
     </div>
     """, unsafe_allow_html=True)
     
-    # Create two columns for insights and story
-    col1, col2 = st.columns(2)
+    # Create tabs for different types of analysis
+    summary_tab, insights_tab, story_tab = st.tabs([
+        "📝 Summary",
+        "💡 Detailed Insights",
+        "📖 Data Story"
+    ])
     
-    with col1:
+    with summary_tab:
         st.markdown("""
-        <div style='background-color: #1F2937; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;'>
-            <h3 style='color: #4F46E5; margin: 0;'>💡 Key Insights</h3>
-            <p style='color: #E5E7EB; margin: 0.5rem 0 0 0;'>Discover patterns and trends</p>
+        <div class='card'>
+            <h3 style='color: #4F46E5; margin: 0 0 1rem 0;'>Quick Summary</h3>
+            <p style='color: #E5E7EB;'>Key findings and patterns in your data</p>
         </div>
         """, unsafe_allow_html=True)
         
-        if st.button("🔍 Generate Insights", use_container_width=True):
-            with st.spinner("AI is analyzing your data..."):
+        if st.button("🔍 Generate Summary", use_container_width=True):
+            with st.spinner("Analyzing data..."):
                 try:
-                    # Add progress bar
+                    # Add progress indicators
                     progress_bar = st.progress(0)
-                    for i in range(100):
-                        progress_bar.progress(i + 1)
+                    status_text = st.empty()
                     
-                    # Generate comprehensive insights
+                    # Step 1: Basic Statistics
+                    status_text.text("Calculating basic statistics...")
+                    progress_bar.progress(20)
+                    
+                    # Step 2: Generate Summary
+                    status_text.text("Generating insights...")
+                    insights = asyncio.run(
+                        st.session_state.data_processor.generate_insights(
+                            df.head(1000)  # Use sample for quick summary
+                        )
+                    )
+                    progress_bar.progress(60)
+                    
+                    # Step 3: Format Results
+                    status_text.text("Formatting results...")
+                    if insights:
+                        for insight in insights[:3]:  # Show top 3 insights
+                            st.markdown(f"""
+                            <div class='metric-card' style='text-align: left; padding: 1rem; margin-bottom: 0.5rem;'>
+                                <div style='color: #F9FAFB;'>{insight['insight']}</div>
+                            </div>
+                            """, unsafe_allow_html=True)
+                    progress_bar.progress(100)
+                    status_text.empty()
+                    
+                except Exception as e:
+                    st.error(f"Error generating summary: {str(e)}")
+                    logger.error(f"Error generating summary: {str(e)}")
+    
+    with insights_tab:
+        st.markdown("""
+        <div class='card'>
+            <h3 style='color: #4F46E5; margin: 0 0 1rem 0;'>Detailed Analysis</h3>
+            <p style='color: #E5E7EB;'>Comprehensive insights and patterns</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        if st.button("🔍 Generate Detailed Analysis", use_container_width=True):
+            with st.spinner("Generating comprehensive analysis..."):
+                try:
+                    # Add progress indicators
+                    progress_bar = st.progress(0)
+                    status_text = st.empty()
+                    
+                    # Step 1: Data Analysis
+                    status_text.text("Analyzing dataset...")
+                    progress_bar.progress(20)
+                    
+                    # Step 2: Generate Insights
+                    status_text.text("Generating insights...")
                     insights = asyncio.run(
                         st.session_state.data_processor.generate_insights(df)
                     )
+                    progress_bar.progress(60)
                     
-                    # Group insights by category
-                    categories = {
-                        "Key Findings": [],
-                        "Patterns & Trends": [],
-                        "Recommendations": [],
-                        "Forecasts": []
-                    }
-                    
-                    for idx, insight in enumerate(insights):
-                        # Categorize insights based on content
-                        text = insight['insight'].lower()
-                        if any(word in text for word in ['predict', 'forecast', 'future', 'expect']):
-                            categories["Forecasts"].append(insight)
-                        elif any(word in text for word in ['should', 'recommend', 'consider', 'suggest']):
-                            categories["Recommendations"].append(insight)
-                        elif any(word in text for word in ['pattern', 'trend', 'correlation', 'relationship']):
-                            categories["Patterns & Trends"].append(insight)
-                        else:
-                            categories["Key Findings"].append(insight)
-                    
-                    # Display insights by category with icons
-                    icons = {
-                        "Key Findings": "💡",
-                        "Patterns & Trends": "📈",
-                        "Recommendations": "🎯",
-                        "Forecasts": "🔮"
-                    }
-                    
-                    for category, category_insights in categories.items():
-                        if category_insights:
+                    # Step 3: Format and Display Results
+                    status_text.text("Formatting results...")
+                    if insights:
+                        categories = {}
+                        for insight in insights:
+                            cat = insight['category']
+                            if cat not in categories:
+                                categories[cat] = []
+                            categories[cat].append(insight['insight'])
+                        
+                        for category, category_insights in categories.items():
                             st.markdown(f"""
-                            <div style='
-                                background-color: #1F2937;
-                                padding: 1rem;
-                                border-radius: 0.5rem;
-                                margin-bottom: 1rem;
-                                border-left: 4px solid #4F46E5;
-                                animation: fadeIn 0.5s ease-out;
-                            '>
-                                <h3 style='color: #4F46E5; margin: 0;'>{icons[category]} {category}</h3>
+                            <div class='card' style='margin-bottom: 1rem;'>
+                                <h4 style='color: #4F46E5; margin: 0 0 0.5rem 0;'>{category}</h4>
                             </div>
                             """, unsafe_allow_html=True)
                             
-                            for idx, insight in enumerate(category_insights):
+                            for insight in category_insights:
                                 st.markdown(f"""
-                                <div style='
-                                    background-color: #1F2937;
-                                    padding: 1rem;
-                                    border-radius: 0.5rem;
-                                    margin-bottom: 0.5rem;
-                                    border-left: 4px solid #7C3AED;
-                                    animation: fadeIn 0.5s ease-in-out {idx * 0.2}s;
-                                '>
-                                    <p style='color: #F9FAFB; margin: 0;'>{insight['insight']}</p>
+                                <div class='metric-card' style='text-align: left; padding: 1rem; margin-bottom: 0.5rem;'>
+                                    <div style='color: #F9FAFB;'>{insight}</div>
                                 </div>
                                 """, unsafe_allow_html=True)
-                            
-                            # Add visualizations for patterns and trends
-                            if category == "Patterns & Trends":
-                                try:
-                                    numeric_cols = df.select_dtypes(include=['float64', 'int64']).columns
-                                    if len(numeric_cols) >= 2:
-                                        col1, col2 = st.columns(2)
-                                        with col1:
-                                            # Correlation heatmap
-                                            fig = px.imshow(
-                                                df[numeric_cols].corr(),
-                                                color_continuous_scale='RdBu_r',
-                                                title="Correlation Heatmap"
-                                            )
-                                            fig.update_layout(
-                                                plot_bgcolor='#1F2937',
-                                                paper_bgcolor='#1F2937',
-                                                font_color='#F9FAFB'
-                                            )
-                                            st.plotly_chart(fig, use_container_width=True)
-                                        
-                                        with col2:
-                                            # Distribution plot
-                                            fig = px.box(
-                                                df,
-                                                y=numeric_cols[0],
-                                                title=f"Distribution of {numeric_cols[0]}"
-                                            )
-                                            fig.update_layout(
-                                                plot_bgcolor='#1F2937',
-                                                paper_bgcolor='#1F2937',
-                                                font_color='#F9FAFB'
-                                            )
-                                            st.plotly_chart(fig, use_container_width=True)
-                                except Exception as e:
-                                    logger.error(f"Error creating visualizations: {str(e)}")
+                    
+                    progress_bar.progress(100)
+                    status_text.empty()
+                    
                 except Exception as e:
-                    st.error(f"Error generating insights: {str(e)}")
-                    logger.error(f"Error generating insights: {str(e)}")
+                    st.error(f"Error generating analysis: {str(e)}")
+                    logger.error(f"Error generating analysis: {str(e)}")
     
-    with col2:
+    with story_tab:
         st.markdown("""
-        <div style='background-color: #1F2937; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;'>
-            <h3 style='color: #4F46E5; margin: 0;'>📝 Data Story</h3>
-            <p style='color: #E5E7EB; margin: 0.5rem 0 0 0;'>Get a narrative analysis</p>
+        <div class='card'>
+            <h3 style='color: #4F46E5; margin: 0 0 1rem 0;'>Data Story</h3>
+            <p style='color: #E5E7EB;'>Narrative analysis of your data</p>
         </div>
         """, unsafe_allow_html=True)
         
-        if st.button("📖 Generate Story", use_container_width=True):
-            with st.spinner("Crafting your data story..."):
+        if st.button("📖 Generate Data Story", use_container_width=True):
+            with st.spinner("Generating narrative..."):
                 try:
-                    # Add progress bar
+                    # Add progress indicators
                     progress_bar = st.progress(0)
-                    for i in range(100):
-                        progress_bar.progress(i + 1)
+                    status_text = st.empty()
                     
+                    # Step 1: Initial Analysis
+                    status_text.text("Analyzing patterns...")
+                    progress_bar.progress(30)
+                    
+                    # Step 2: Generate Story
+                    status_text.text("Crafting narrative...")
                     story = asyncio.run(
                         st.session_state.data_processor.generate_data_story(df)
                     )
-                    st.markdown(f"""
-                    <div style='
-                        background-color: #1F2937;
-                        padding: 1.5rem;
-                        border-radius: 0.5rem;
-                        border-left: 4px solid #7C3AED;
-                        animation: fadeIn 0.5s ease-in-out;
-                    '>
-                        <div style='color: #F9FAFB; line-height: 1.6;'>{story}</div>
-                    </div>
-                    """, unsafe_allow_html=True)
+                    progress_bar.progress(70)
                     
-                    # Add download button for the story
-                    st.download_button(
-                        label="📥 Download Story",
-                        data=story,
-                        file_name="data_story.txt",
-                        mime="text/plain"
-                    )
+                    # Step 3: Format and Display
+                    status_text.text("Formatting story...")
+                    if story:
+                        sections = story.split('\n\n')
+                        for section in sections:
+                            if section.strip():
+                                st.markdown(f"""
+                                <div class='metric-card' style='text-align: left; padding: 1rem; margin-bottom: 0.5rem;'>
+                                    <div style='color: #F9FAFB; line-height: 1.6;'>{section}</div>
+                                </div>
+                                """, unsafe_allow_html=True)
+                        
+                        # Add download button
+                        st.download_button(
+                            "📥 Download Story",
+                            story,
+                            "data_story.txt",
+                            "text/plain",
+                            use_container_width=True
+                        )
+                    
+                    progress_bar.progress(100)
+                    status_text.empty()
+                    
                 except Exception as e:
-                    st.error(f"Error generating data story: {str(e)}")
-                    logger.error(f"Error generating data story: {str(e)}")
+                    st.error(f"Error generating story: {str(e)}")
+                    logger.error(f"Error generating story: {str(e)}")
+    
+
+def get_section_description(category: str) -> str:
+    """Get description for each insight section"""
+    descriptions = {
+        "Key Findings": "Core discoveries and patterns in your data",
+        "Business Impact": "How this data can drive growth and opportunities",
+        "Future Predictions": "Trends and potential future developments",
+        "Actionable Recommendations": "Strategic steps for implementation",
+        "Domain Impact": "Implications for your specific industry"
+    }
+    return descriptions.get(category, "Analysis and insights")
+
+def format_insight_paragraph(text: str) -> str:
+    """Format insight text into a readable paragraph"""
+    # Remove any markdown-style bullets
+    text = text.replace('*', '').replace('-', '').strip()
+    
+    # Ensure first letter is capitalized
+    if text:
+        text = text[0].upper() + text[1:]
+        
+    # Add period if missing
+    if text and not text.endswith(('.', '!', '?')):
+        text += '.'
+        
+    return text
 
 def display_sample_datasets():
     """Display sample datasets section"""

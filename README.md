@@ -1,6 +1,21 @@
-# DeepInsight Data Analysis Tool
+# DeepInsight Data Analysis Tool (v2.0.0)
 
-A data analysis tool I built to help analyze and visualize datasets using Python and Streamlit. This project was created as part of my learning journey in data science and web development.
+A powerful data analysis tool that combines advanced visualization capabilities with AI-powered insights. Built with Python and Streamlit, this tool helps you understand your data deeper and faster than ever before.
+
+## What's New in v2.0.0
+
+- Enhanced AI Insights
+
+  - Quick summary generation for rapid data understanding
+  - Detailed analysis with key findings and business implications
+  - Optimized performance with smart data sampling
+  - Improved reliability with retry logic and error handling
+
+- Improved User Experience
+  - New tabbed interface for better organization
+  - Real-time progress indicators
+  - Enhanced error handling and feedback
+  - Faster response times for large datasets
 
 ## Features
 
@@ -27,10 +42,14 @@ A data analysis tool I built to help analyze and visualize datasets using Python
   - Correlation heatmaps
 
 - AI-Powered Analysis
-  - Pattern detection
-  - Trend analysis
-  - Automated insights generation
-  - Natural language data stories
+  - Smart data sampling for optimal performance
+  - Pattern detection and statistical analysis
+  - Business impact assessment
+  - Future trend predictions
+  - Actionable recommendations
+  - Automated data storytelling
+  - Real-time progress tracking
+  - Intelligent error handling and retries
 
 ## Getting Started
 
